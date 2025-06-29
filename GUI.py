@@ -33,5 +33,3 @@ button.pack()
 
 
 window.mainloop()
-
-print("eu fiz está mudança")
