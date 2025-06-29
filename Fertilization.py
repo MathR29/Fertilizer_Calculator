@@ -1,37 +1,61 @@
 import pandas as pd
 
 class Soil:
+    p_deficit = 0
+    k_deficit = 0
+    mg_deficit = 0
+    ca_deficit = 0
+    CTC = 0
+    Phosphorus = 0
+    Potassium = 0
+    Calcium = 0
+    Magnesium = 0
+    Clay = 0
+
     def __init__(self,plot_id):
-        df_soil = pd.read_csv('Soil_Analysis.csv')
-        self.df_soil = df_soil[df_soil["plot_id"] == plot_id]
-        self.CTC = self.df_soil["ctc"].values[0]
-        self.Phosphorus =  self.df_soil["p"].values[0]
-        self.Potassium =  self.df_soil["k"].values[0]
-        self.Calcium =  self.df_soil["ca"].values[0]
-        self.Magnesium =  self.df_soil["mg"].values[0]
-        self.Clay = self.df_soil["clay"].values[0]
+        self.populate_info("Soil_Analysis.csv",plot_id)
+        self.deficits()
+
+    def populate_info(self,path,plot_id):
+        csv = pd.read_csv(path)
+        df_soil = csv[csv["plot_id"] == plot_id]
+        self.CTC = df_soil["ctc"].values[0]
+        self.Phosphorus = df_soil["p"].values[0]
+        self.Potassium = df_soil["k"].values[0]
+        self.Calcium = df_soil["ca"].values[0]
+        self.Magnesium = df_soil["mg"].values[0]
+        self.Clay = df_soil["clay"].values[0]
+
 
     def deficits(self):
         if self.Clay < 25:
-            p_deficit = 18 - self.Phosphorus if self.Phosphorus < 18 else 0
+            self.p_deficit = 18 - self.Phosphorus if self.Phosphorus < 18 else 0
 
         elif 25 <= self.Clay < 40:
-            p_deficit = 12 - self.Phosphorus if self.Phosphorus < 12 else 0
+            self.p_deficit = 12 - self.Phosphorus if self.Phosphorus < 12 else 0
 
         else:
-            p_deficit = 9 - self.Phosphorus if self.Phosphorus < 9 else 0
+            self.p_deficit = 9 - self.Phosphorus if self.Phosphorus < 9 else 0
 
-        k_deficit = 0.21 - self.Potassium if self.Potassium < 0.21 else 0
-        ca_deficit = 2 - self.Calcium if self.Calcium < 2 else 0
-        mg_deficit = 1 - self.Magnesium if self.Magnesium < 1 else 0
+        self.k_deficit = 0.21 - self.Potassium if self.Potassium < 0.21 else 0
+        self.ca_deficit = 2 - self.Calcium if self.Calcium < 2 else 0
+        self.mg_deficit = 1 - self.Magnesium if self.Magnesium < 1 else 0
+
         return {
-            "P_Deficit": round(p_deficit,2),
-            "K_Deficit": round(k_deficit,2),
-            "Ca_Deficit": round(ca_deficit,2),
-            "Mg_Deficit": round(mg_deficit,2)
+            "P_Deficit": round(self.p_deficit,2),
+            "K_Deficit": round(self.k_deficit,2),
+            "Ca_Deficit": round(self.ca_deficit,2),
+            "Mg_Deficit": round(self.mg_deficit,2)
         }
 
+
 class Crop:
+    name = ""
+    n_upk = 0
+    p_upk = 0
+    k_upk = 0
+    yld = 0
+
     def __init__(self,name,n_upk,p_upk,k_upk,yld):
         self.name = name
         self.yld = yld
@@ -76,11 +100,11 @@ class Soybean(Crop):
 class FertCalc:
 
     @staticmethod
-    def correction_fertilization(p_deficit,k_deficit,ca_deficit,mg_deficit):
-        p_correction = p_deficit * 2 * 2.29 # P2O5
-        k_correction = k_deficit * 391 * 2 * 1.20458 # K2O
-        ca_correction = ca_deficit * 200.4 * 2 * 1.4 # CaO
-        mg_correction = mg_deficit * 121.56 * 2 * 1.67 # MgO
+    def correction_fertilization(soil):
+        p_correction = soil.p_deficit * 2 * 2.29 # P2O5
+        k_correction = soil.k_deficit * 391 * 2 * 1.20458 # K2O
+        ca_correction = soil.ca_deficit * 200.4 * 2 * 1.4 # CaO
+        mg_correction = soil.mg_deficit * 121.56 * 2 * 1.67 # MgO
 
         return {
             "P_correction": round(p_correction,2),
