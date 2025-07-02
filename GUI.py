@@ -1,7 +1,8 @@
 from tkinter import *
 from tkinter.ttk import Combobox
-
 from Fertilization import *
+
+
 
 ### Creating Main Window ###
 window = Tk()
@@ -9,6 +10,10 @@ window = Tk()
 
 
 ### Creating Functions ###
+def get_crop():
+    crop = crops_list.get()
+    return print(crop)
+
 def get_yield():
     yld = entry_yld.get()
     try:
@@ -28,9 +33,9 @@ def get_plotid():
 
 ### Crop ###
 crops = ["Corn","Soybeans","Wheat"]
-crop_list = Combobox(window,values = crops)
-crop_list.set("Select a desired crop")
-crop_list.pack(side = "left")
+crops_list = Combobox(window,values = crops)
+crops_list.set("Select a desired crop")
+crops_list.pack(side = "left")
 
 
 
@@ -53,7 +58,7 @@ label_yld.pack(side = "left")
 entry_yld = Entry(window)
 entry_yld.pack(side = "left")
 button_yld = Button(window,
-                        text = "Submit Plot ID",
+                        text = "Submit Yield",
                         command = get_yield)
 button_yld.pack(side = "left")
 
