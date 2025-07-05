@@ -12,7 +12,17 @@ window = Tk()
 ### Creating Functions ###
 def get_crop():
     crop = crops_list.get()
-    return print(crop)
+
+    if crop == "Milho":
+        corn = Corn(get_yield())  
+        return corn
+
+    elif crop == "Soja":
+        soybean = Soybean(get_yield())
+        return soybean
+    else:
+        wheat = Wheat(get_yield())
+        return wheat
 
 def get_yield():
     yld = entry_yld.get()
@@ -26,17 +36,32 @@ def get_yield():
 def get_plotid():
     plot_id = entry_plot_id.get()
     soil = Soil(plot_id)
-    print(soil.deficits())
-    return
+    return soil
+
+
+
+def calculator():
+    soil = get_plotid()
+    crop = get_crop()
+    calculator = FertCalc()
+    correction = calculator.correction_fertilization(soil)
+    maintenance = calculator.maintenance_fertilization(crop)
+    fertilization = calculator.total_fertilization(correction,maintenance)
+    print(fertilization)
+    return fertilization
 
 
 
 ### Crop ###
-crops = ["Corn","Soybeans","Wheat"]
-crops_list = Combobox(window,values = crops)
-crops_list.set("Select a desired crop")
+crops = ["Milho","Soja","Trigo"]
+crops_list = Combobox(window,
+                      values = crops)
+crops_list.set("Escolha a cultura de interesse.")
 crops_list.pack(side = "left")
-
+button_crop = Button(window,
+                     text = "Crop",
+                     command = calculator)
+button_crop.pack(side = "left")
 
 
 ### Plot ID ###
