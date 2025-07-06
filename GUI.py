@@ -47,7 +47,8 @@ def calculator():
     correction = calculator.correction_fertilization(soil)
     maintenance = calculator.maintenance_fertilization(crop)
     fertilization = calculator.total_fertilization(correction,maintenance)
-    print(fertilization)
+    output.delete("1.0",END)
+    output.insert(END,fertilization)
     return fertilization
 
 
@@ -58,10 +59,7 @@ crops_list = Combobox(window,
                       values = crops)
 crops_list.set("Escolha a cultura de interesse.")
 crops_list.pack(side = "left")
-button_crop = Button(window,
-                     text = "Crop",
-                     command = calculator)
-button_crop.pack(side = "left")
+
 
 
 ### Plot ID ###
@@ -70,11 +68,6 @@ label_plot_id.pack(side = "left")
 entry_plot_id = Entry(window)
 entry_plot_id.pack(side = "left")
 
-button_plot_id = Button(window,
-                        text = "Submit Plot ID",
-                        command = get_plotid)
-button_plot_id.pack(side = "left")
-
 
 
 ### Yield ###
@@ -82,12 +75,18 @@ label_yld = Label(window,text = "Yield:")
 label_yld.pack(side = "left")
 entry_yld = Entry(window)
 entry_yld.pack(side = "left")
-button_yld = Button(window,
-                        text = "Submit Yield",
-                        command = get_yield)
-button_yld.pack(side = "left")
 
 
+
+### Calculate ###
+calculate_button = Button(window,
+                          text = "Calculate",
+                          command = calculator)
+calculate_button.pack()
+output = Text(window,
+              height = 5,
+              width = 30)
+output.pack(side = "right")
 
 ### Main Loop ###
 window.mainloop()
