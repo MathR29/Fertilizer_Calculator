@@ -47,8 +47,12 @@ def calculator():
     correction = calculator.correction_fertilization(soil)
     maintenance = calculator.maintenance_fertilization(crop)
     fertilization = calculator.total_fertilization(correction,maintenance)
-    output.delete("1.0",END)
-    output.insert(END,fertilization)
+    output1.delete("1.0",END)
+    output2.delete("1.0",END)
+    output3.delete("1.0",END)
+    output3.insert(END,fertilization['N'])
+    output2.insert(END,fertilization['P'])
+    output1.insert(END,fertilization['K'])
     return fertilization
 
 
@@ -83,10 +87,19 @@ calculate_button = Button(window,
                           text = "Calculate",
                           command = calculator)
 calculate_button.pack()
-output = Text(window,
+output1 = Text(window,
               height = 5,
-              width = 30)
-output.pack(side = "right")
+              width = 10)
+output1.pack(side = "right")
 
-### Main Loop ###
+output2 = Text(window,     
+              height = 5,  
+              width = 10)  ### Main Loop ###
+output2.pack(side = "right")
+
+output3 = Text(window,     
+              height = 5,  
+              width = 10)  
+output3.pack(side = "right")
+
 window.mainloop()
