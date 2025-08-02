@@ -1,11 +1,15 @@
 from tkinter import *
 from tkinter.ttk import Combobox
 from Fertilization import *
+from PIL import Image, ImageTk
 
 
 
 ### Creating Main Window ###
 window = Tk()
+icon = ImageTk.PhotoImage(Image.open("icone.png"))
+window.iconphoto(True,icon)
+
 
 
 
@@ -47,12 +51,15 @@ def calculator():
     correction = calculator.correction_fertilization(soil)
     maintenance = calculator.maintenance_fertilization(crop)
     fertilization = calculator.total_fertilization(correction,maintenance)
+    lime = calculator.lime_required(crop,soil)
     output1.delete("1.0",END)
     output2.delete("1.0",END)
     output3.delete("1.0",END)
+    output4.delete("1.0",END)
     output3.insert(END,fertilization['N'])
     output2.insert(END,fertilization['P'])
     output1.insert(END,fertilization['K'])
+    output4.insert(END,lime)
     return fertilization
 
 
@@ -87,18 +94,24 @@ calculate_button = Button(window,
                           text = "Calculate",
                           command = calculator)
 calculate_button.pack()
+
+output4 = Text(window,       
+               height = 2,   
+               width = 10)   
+output4.pack(side = "bottom")
+
 output1 = Text(window,
-              height = 5,
+              height = 2,
               width = 10)
 output1.pack(side = "right")
 
 output2 = Text(window,     
-              height = 5,  
-              width = 10)  ### Main Loop ###
+              height = 2,  
+              width = 10)  
 output2.pack(side = "right")
 
 output3 = Text(window,     
-              height = 5,  
+              height = 2,  
               width = 10)  
 output3.pack(side = "right")
 

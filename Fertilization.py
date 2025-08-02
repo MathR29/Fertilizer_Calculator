@@ -6,6 +6,7 @@ class Soil:
     mg_deficit = 0
     ca_deficit = 0
     CTC = 0
+    V = 0
     Phosphorus = 0
     Potassium = 0
     Calcium = 0
@@ -20,6 +21,7 @@ class Soil:
         csv = pd.read_csv(path)
         df_soil = csv[csv["plot_id"] == plot_id]
         self.CTC = df_soil["ctc"].values[0]
+        self.V = df_soil["v"].values[0]
         self.Phosphorus = df_soil["p"].values[0]
         self.Potassium = df_soil["k"].values[0]
         self.Calcium = df_soil["ca"].values[0]
@@ -54,14 +56,18 @@ class Crop:
     n_upk = 0
     p_upk = 0
     k_upk = 0
+    v_max = 0
+    v_min = 0 #V == Saturação por bases
     yld = 0
 
-    def __init__(self,name,n_upk,p_upk,k_upk,yld):
+    def __init__(self,name,n_upk,p_upk,k_upk,v_max,v_min,yld):
         self.name = name
         self.yld = yld
         self.n_upk = n_upk
         self.p_upk = p_upk
         self.k_upk = k_upk
+        self.v_max = v_max
+        self.v_min = v_min  
 
     def nutrients_required(self):
         n_total = round(self.n_upk * self.yld, 2)
@@ -77,24 +83,30 @@ class Corn(Crop):
     def __init__(self,yld):
         super().__init__("Corn",
                          n_upk = 14.4,
-                        p_upk = 3.4,
-                        k_upk = 5.4,
+                         p_upk = 3.4,
+                         k_upk = 5.4,
+                         v_min = 60,
+                         v_max = 70,
                          yld = yld)
 
 class Wheat(Crop):
     def __init__(self,yld):
         super().__init__("Wheat",
                          n_upk = 20,
-                        p_upk = 3.2,
-                        k_upk = 3.5,
+                         p_upk = 3.2,
+                         k_upk = 3.5,
+                         v_min = 60,
+                         v_max = 70,
                          yld = yld)
 
 class Soybean(Crop):
     def __init__(self,yld):
         super().__init__("Soybean",
                          n_upk = 0,
-                        p_upk = 4.5,
-                        k_upk = 14.2,
+                         p_upk = 4.5,
+                         k_upk = 14.2,
+                         v_min = 50,
+                         v_max = 60,
                          yld = yld)
 
 class FertCalc:
@@ -136,3 +148,7 @@ class FertCalc:
             "P": round(p,2),
             "K": round(k,2)
         }
+    @staticmethod
+    def lime_required(crop,soil):
+        lime_required = round(((crop.v_max - soil.V) * soil.CTC)/100,2)
+        return lime_required
