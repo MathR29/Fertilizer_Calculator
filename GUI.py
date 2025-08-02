@@ -1,31 +1,27 @@
-from tkinter import *
-from tkinter.ttk import Combobox
-from Fertilization import *
-from PIL import Image, ImageTk
+import Fertilization as fert
+import tkinter as tk
+from tkinter import Button, Entry, Label, Text, ttk
+from PIL import ImageTk, Image
 
-
-
-### Creating Main Window ###
-window = Tk()
+window = tk.Tk()
+window.title("Fertilization calculator")
+window.geometry("550x200")
 icon = ImageTk.PhotoImage(Image.open("icone.png"))
 window.iconphoto(True,icon)
-
-
-
 
 ### Creating Functions ###
 def get_crop():
     crop = crops_list.get()
 
     if crop == "Milho":
-        corn = Corn(get_yield())  
+        corn = fert.Corn(get_yield())
         return corn
 
     elif crop == "Soja":
-        soybean = Soybean(get_yield())
+        soybean = fert.Soybean(get_yield())
         return soybean
     else:
-        wheat = Wheat(get_yield())
+        wheat = fert.Wheat(get_yield())
         return wheat
 
 def get_yield():
@@ -39,7 +35,7 @@ def get_yield():
 
 def get_plotid():
     plot_id = entry_plot_id.get()
-    soil = Soil(plot_id)
+    soil = fert.Soil(plot_id)
     return soil
 
 
@@ -47,72 +43,111 @@ def get_plotid():
 def calculator():
     soil = get_plotid()
     crop = get_crop()
-    calculator = FertCalc()
+    calculator = fert.FertCalc()
     correction = calculator.correction_fertilization(soil)
     maintenance = calculator.maintenance_fertilization(crop)
     fertilization = calculator.total_fertilization(correction,maintenance)
     lime = calculator.lime_required(crop,soil)
-    output1.delete("1.0",END)
-    output2.delete("1.0",END)
-    output3.delete("1.0",END)
-    output4.delete("1.0",END)
-    output3.insert(END,fertilization['N'])
-    output2.insert(END,fertilization['P'])
-    output1.insert(END,fertilization['K'])
-    output4.insert(END,lime)
+    output_N.delete("1.0", tk.END)
+    output_P.delete("1.0", tk.END)
+    output_K.delete("1.0", tk.END)
+    output_Lime.delete("1.0",tk.END)
+    output_N.insert(tk.END, fertilization['N'])
+    output_P.insert(tk.END, fertilization['P'])
+    output_K.insert(tk.END, fertilization['K'])
+    output_Lime.insert(tk.END,lime)
     return fertilization
 
 
-
-### Crop ###
-crops = ["Milho","Soja","Trigo"]
-crops_list = Combobox(window,
-                      values = crops)
-crops_list.set("Escolha a cultura de interesse.")
-crops_list.pack(side = "left")
-
-
+### CROP LIST ###
+crops_list_label = Label(window,
+                         text = "Selecione a Cultura:")
+crops_list = ttk.Combobox(
+    values = ["Soja","Milho","Trigo"],
+    state = "readonly")
+crops_list_label.place(x = 0,
+                       y = 0) 
+crops_list.place(x = 0,
+                 y = 20)
 
 ### Plot ID ###
-label_plot_id = Label(window,text = "Plot ID:")
-label_plot_id.pack(side = "left")
-entry_plot_id = Entry(window)
-entry_plot_id.pack(side = "left")
-
-
+entry_plot_id_label = Label(window,
+                            text = "Insira o talhão:")
+entry_plot_id = Entry()
+entry_plot_id_label.place(x = 0,
+                          y = 50)
+entry_plot_id.place(x = 0,
+                    y = 70)
 
 ### Yield ###
-label_yld = Label(window,text = "Yield:")
-label_yld.pack(side = "left")
-entry_yld = Entry(window)
-entry_yld.pack(side = "left")
-
-
-
-### Calculate ###
+entry_yld_label = Label(window,
+                  text = "Insira a produtividade da cultura:")
+entry_yld = Entry(width = 28)
+entry_yld_label.place(x = 0,
+                      y = 100)
+entry_yld.place(x = 0,
+                y = 120)
+### Buttons ###
 calculate_button = Button(window,
-                          text = "Calculate",
-                          command = calculator)
-calculate_button.pack()
+                          text = "Calcular",
+                          font = ("Arial", 14),
+                          command =calculator,
+                          height = 2,
+                          width = 10)
+calculate_button.place(x = 280,
+                       y = 60)
 
-output4 = Text(window,       
-               height = 2,   
-               width = 10)   
-output4.pack(side = "bottom")
+### Outputs Labels ###
+output_N_label = Label(window,
+                       text = "N (Kg/ha)")
+output_P_label = Label(window,
+                       text = "P205 (Kg/ha)")
+output_K_label = Label(window,
+                       text = "K2O (Kg/ha)")
+output_Lime_label = Label(window,
+                          text = "Calcário (T/ha)")
 
-output1 = Text(window,
-              height = 2,
-              width = 10)
-output1.pack(side = "right")
+output_N_label.place(x = 0,
+                     y = 150)
+output_P_label.place(x = 150,
+                     y = 150)
+output_K_label.place(x = 300,
+                     y = 150)
+output_Lime_label.place(x = 450,
+                        y = 150)
 
-output2 = Text(window,     
-              height = 2,  
-              width = 10)  
-output2.pack(side = "right")
 
-output3 = Text(window,     
-              height = 2,  
-              width = 10)  
-output3.pack(side = "right")
+
+### Outputs ###
+output_N = Text(window,
+                height = 1,
+                width = 12)
+output_N.place(x = 0,
+               y = 170)
+
+
+output_P = Text(window,
+                height = 1,
+                width = 12)
+output_P.place(x = 150,
+               y = 170)
+
+
+output_K = Text(window,
+                height = 1,
+                width = 12)
+output_K.place(x = 300,
+               y = 170)
+
+output_Lime = Text(window,
+                height = 1,
+                width = 12)
+output_Lime.place(x = 450,
+                  y = 170)
+
+
+
+
+
 
 window.mainloop()
