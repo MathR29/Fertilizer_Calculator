@@ -191,6 +191,8 @@ entry_new_ca.grid(row=6, column=1, padx=5, pady=2)
 Label(frame_inserir_dados, text="Mg (cmolc/dm³)").grid(row=7, column=0, padx=5, pady=2, sticky="e")
 entry_new_mg = Entry(frame_inserir_dados)
 entry_new_mg.grid(row=7, column=1, padx=5, pady=2)
+
+# Botão de inserir
 insert_button = Button(frame_inserir_dados,
                        text = "Inserir Dados",
                        command= lambda: insert_data(plot_id = entry_new_plotid.get(), 
@@ -202,6 +204,13 @@ insert_button = Button(frame_inserir_dados,
                                                     ca = entry_new_ca.get(),
                                                     mg = entry_new_mg.get()))
 insert_button.grid(row=8, column=0, columnspan=2, pady=10)
+
+#Botão Voltar
+back_button = Button(frame_inserir_dados,
+                     text = "Voltar",
+                     command = lambda: select_frame("Menu"))
+back_button.grid(row = 9,column=1)
+
 
 select_frame("Menu")
 root.mainloop()
